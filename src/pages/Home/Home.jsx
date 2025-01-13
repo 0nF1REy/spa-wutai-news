@@ -1,9 +1,19 @@
 import { Card } from "../../components/Card/Card";
 import { Navbar } from "../../components/Navbar/Navbar";
-import { news } from "../../Datas.js";
+import { findAll } from "../../services/newsServices.js";
 import { HomeBody } from "./HomeStyled";
 
 export default function Home() {
+  let news;
+
+  async function findAll() {
+    const response = await getAll();
+    news = response.data.results;
+  }
+
+  findAll();
+  console.log(news);
+
   return (
     <>
       <Navbar />

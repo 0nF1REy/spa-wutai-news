@@ -30,13 +30,13 @@ export const CardBody = styled.article`
 `;
 
 export const CardFooter = styled.article`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  div {
     display: flex;
     align-items: center;
-    gap: 1rem;
-
-    div {
-        display: flex;
-        align-items: center;
-        gap: .2rem;
-    }
-`
+    gap: 0.2rem;
+  }
+`;
