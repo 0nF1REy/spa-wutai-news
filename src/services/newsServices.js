@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:3000";
+const baseURL = "http://localhost:3000";
 
 export function findAll() {
-  const response = axios.get(`${baseUrl}/news`);
+  const response = axios.get(`${baseURL}/news`);
   return response;
 }
 
