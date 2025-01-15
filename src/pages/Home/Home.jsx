@@ -14,7 +14,7 @@ export default function Home() {
     setNews(newsResponse.data.results);
 
     const topNewsResponse = await getTopNews();
-    setTopNews(topNewsResponse.data.news)
+    setTopNews(topNewsResponse.data.news);
   }
 
   useEffect(() => {
@@ -24,14 +24,14 @@ export default function Home() {
   return (
     <>
       <HomeHeader>
-      <Card
-            top={true}
-            title={topNews.title}
-            text={topNews.text}
-            banner={topNews.banner}
-            likes={topNews.likes}
-            comments={topNews.comments}
-          />
+        <Card
+          top="true"
+          title={topNews.title}
+          text={topNews.text}
+          banner={topNews.banner}
+          likes={topNews.likes}
+          comments={topNews.comments}
+        />
       </HomeHeader>
       <HomeBody>
         {news.map((item) => (

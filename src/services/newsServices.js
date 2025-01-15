@@ -9,3 +9,7 @@ export function findAll() {
 export function getTopNews() {
   return axios.get(`${baseURL}/news/top`);
 }
+
+export function searchNews(title) {
+  return axios.get(`${baseURL}/news/search?title=${title}`);
+}
