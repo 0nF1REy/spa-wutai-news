@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const baseURL = "http://localhost:3000";
 
@@ -13,8 +14,20 @@ export function signup(data) {
   return axios.post(`${baseURL}/user/create`, body);
 }
 
+export function signin(data) {
+  return axios.post(`${baseURL}/auth`, data);
+}
+
+export function userLogged() {
+  return axios.get(`${baseURL}/user/findById/`, {
+    headers: {
+      Authorization: `Bearer ${Cookies.get("token")}`,
+    }
+  });
+}
+
 function generateUserName(name) {
-    const nameLowerCaseWithoutSpaces = name.replace(/\s/g, "").toLowerCase();
-    const randomNumber = Math.floor(Math.random() * 1000);
-    return `${nameLowerCaseWithoutSpaces}-${randomNumber}`;
-  }
+  const nameLowerCaseWithoutSpaces = name.replace(/\s/g, "").toLowerCase();
+  const randomNumber = Math.floor(Math.random() * 1000);
+  return `${nameLowerCaseWithoutSpaces}-${randomNumber}`;
+}

@@ -4,6 +4,7 @@ import { Card } from "../../components/Card/Card";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { findAll, getTopNews } from "../../services/newsServices";
 import { HomeBody, HomeHeader } from "./HomeStyled";
+import Cookies from "js-cookie";
 
 export default function Home() {
   const [news, setNews] = useState([]);

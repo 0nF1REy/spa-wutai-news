@@ -1,10 +1,19 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import logo from "../../images/LogoWN.png";
-import { ErrorSpan, ImageLogo, InputSpace, Nav } from "./NavbarStyled";
+import {
+  ErrorSpan,
+  ImageLogo,
+  InputSpace,
+  Nav,
+  UserLoggedSpace,
+} from "./NavbarStyled";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../Button/Button";
 import { searchSchema } from "../../schemas/searchSchema";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import { userLogged } from "../../services/userServices";
 
 export function Navbar() {
   const {
@@ -16,6 +25,8 @@ export function Navbar() {
     resolver: zodResolver(searchSchema),
   });
   const navigate = useNavigate();
+  const [user, setUser] = useState(null); // Inicializa com null
+  const [loading, setLoading] = useState(true);
 
   function onSearch(data) {
     const { title } = data;
@@ -23,9 +34,35 @@ export function Navbar() {
     reset();
   }
 
-  function goAuth() {
-    navigate("/auth");
+  async function findUserLogged() {
+    setLoading(true);
+    try {
+      const response = await userLogged();
+      if (
+        response.data &&
+        response.data.results &&
+        response.data.results.length > 0
+      ) {
+        setUser(response.data.results[0]);
+      } else {
+        console.error("Não foram encontrados dados de usuário na resposta.");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   }
+
+  function signout() {
+    Cookies.remove("token");
+    setUser(undefined);
+    navigate("/");
+  }
+
+  useEffect(() => {
+    if (Cookies.get("token")) findUserLogged();
+  }, []);
 
   return (
     <>
@@ -48,11 +85,18 @@ export function Navbar() {
           <ImageLogo src={logo} alt="Logo do Wutai News" />
         </Link>
 
-        <Link to="/auth">
-          <Button type="button" text="Entrar">
-            Entrar
-          </Button>
-        </Link>
+        {user ? (
+          <UserLoggedSpace>
+            <h2>{user.name}</h2>
+            <i className="bi bi-box-arrow-right" onClick={signout}></i>
+          </UserLoggedSpace>
+        ) : (
+          <Link to="/auth">
+            <Button type="button" text="Entrar">
+              Entrar
+            </Button>
+          </Link>
+        )}
       </Nav>
       {errors.title && <ErrorSpan>{errors.title.message}</ErrorSpan>}
       <Outlet />
