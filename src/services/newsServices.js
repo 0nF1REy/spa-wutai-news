@@ -1,5 +1,5 @@
 import axios from "axios";
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie';
 
 const baseURL = "http://localhost:3000";
 
@@ -36,14 +36,15 @@ const handleRequestError = (error, message) => {
   }
 };
 
-export const findAll = async () => {
-  try {
-    const response = await api.get("/news");
-    return response;
-  } catch (error) {
-    handleRequestError(error, "Erro ao buscar todas as notícias");
-  }
-};
+export const findAll = async (limit, offset) => {
+    try {
+      const response = await api.get(`/news?limit=${limit}&offset=${offset}`);
+      return response;
+    } catch (error) {
+      handleRequestError(error, "Erro ao buscar todas as notícias");
+    }
+  };
+
 
 export const getTopNews = async () => {
   try {
@@ -115,15 +116,16 @@ export const editNews = async (body, id) => {
   }
 };
 
+
 export const deleteNews = async (id) => {
-  try {
-    const response = await api.delete(`/news/${id}`, {
-      headers: {
-        Authorization: `Bearer ${Cookies.get("token")}`,
-      },
-    });
-    return response;
-  } catch (error) {
-    handleRequestError(error, "Erro ao deletar a notícia");
-  }
+    try {
+        const response = await api.delete(`/news/${id}`, {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          });
+        return response;
+      } catch (error) {
+          handleRequestError(error, "Erro ao deletar a notícia");
+      }
 };
