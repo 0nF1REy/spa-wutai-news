@@ -101,3 +101,29 @@ export const getNewsById = async (id) => {
     handleRequestError(error, "Erro ao buscar notícia pelo ID");
   }
 };
+
+export const editNews = async (body, id) => {
+  try {
+    const response = await api.patch(`/news/${id}`, body, {
+      headers: {
+        Authorization: `Bearer ${Cookies.get("token")}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    handleRequestError(error, "Erro ao editar a notícia");
+  }
+};
+
+export const deleteNews = async (id) => {
+  try {
+    const response = await api.delete(`/news/${id}`, {
+      headers: {
+        Authorization: `Bearer ${Cookies.get("token")}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    handleRequestError(error, "Erro ao deletar a notícia");
+  }
+};

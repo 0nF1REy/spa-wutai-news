@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../../components/Input/Input";
 import { Button } from "../../components/Button/Button";
 import { useEffect } from "react";
+import { ErrorSpan } from "../../components/Navbar/NavbarStyled";
 
 export function ManageNews() {
   const { action, id } = useParams();
@@ -44,12 +45,17 @@ export function ManageNews() {
 
   async function findNewsById(id) {
     try {
-      const { data } = await getNewsById(id);
-      setValue("title", data.title);
-      setValue("banner", data.banner);
-      setValue("text", data.text);
+      const response = await getNewsById(id);
+      if (response.data && response.data.news) {
+        const data = response.data.news;
+        setValue("title", data.title);
+        setValue("banner", data.banner);
+        setValue("text", data.text);
+      } else {
+        console.error("Não foi encontrada nenhuma notícia para o id", id);
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Erro ao buscar notícias para edição:", error);
     }
   }
 
@@ -66,7 +72,7 @@ export function ManageNews() {
     if (action === "edit" || action === "delete") {
       findNewsById(id);
     }
-  }, []);
+  }, [action, id]);
 
   return (
     <AddNewsContainer>
@@ -80,7 +86,7 @@ export function ManageNews() {
       </h2>
       <form
         onSubmit={
-          action == "add"
+          action === "add"
             ? handleRegisterNews(registerNewsSubmit)
             : action === "edit"
             ? handleRegisterNews(editNewsSubmit)
@@ -93,6 +99,7 @@ export function ManageNews() {
           name="title"
           register={registerNews}
           disabled={action === "delete"}
+          defaultValue=""
         />
         {errorsRegisterNews.title && (
           <ErrorSpan>{errorsRegisterNews.title.message}</ErrorSpan>
@@ -103,6 +110,7 @@ export function ManageNews() {
           name="banner"
           register={registerNews}
           disabled={action === "delete"}
+          defaultValue=""
         />
         {errorsRegisterNews.banner && (
           <ErrorSpan>{errorsRegisterNews.banner.message}</ErrorSpan>
@@ -114,6 +122,7 @@ export function ManageNews() {
           register={registerNews}
           isInput={false}
           disabled={action === "delete"}
+          defaultValue=""
         />
         {errorsRegisterNews.text && (
           <ErrorSpan>{errorsRegisterNews.text.message}</ErrorSpan>
