@@ -22,7 +22,7 @@ export function userLogged() {
   return axios.get(`${baseURL}/user/findById/`, {
     headers: {
       Authorization: `Bearer ${Cookies.get("token")}`,
-    }
+    },
   });
 }
 
