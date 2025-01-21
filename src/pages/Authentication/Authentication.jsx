@@ -37,7 +37,7 @@ export function Authentication() {
     } catch (error) {
       console.error("Erro ao fazer login: ", error);
       if (error?.response?.status === 404) {
-        setLoginError("Email ou senha incorretos");
+        setLoginError("Os dados de login informados são inválidos. Por favor, verifique seu e-mail ou senha e tente novamente.");
         setError("password", { message: " " });
         setError("email", { message: " " });
       } else {
@@ -56,7 +56,7 @@ export function Authentication() {
     } catch (error) {
       console.error("Erro ao fazer cadastro: ", error);
       if (error?.response?.status === 409) {
-        setSignupError("Email já cadastrado");
+        setSignupError("O e-mail informado já está cadastrado em nosso sistema.");
         setErrorSignup("email", { message: " " });
       } else {
         setSignupError("Erro ao fazer cadastro");
