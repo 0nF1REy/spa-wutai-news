@@ -9,19 +9,25 @@ import { signupSchema } from "../../schemas/signupSchema";
 import { signin, signup } from "../../services/userServices";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { useState } from "react";
 
 export function Authentication() {
   const {
     register: registerSignup,
     handleSubmit: handleSubmitSignup,
     formState: { errors: errorsSignup },
+    setError: setErrorSignup,
   } = useForm({ resolver: zodResolver(signupSchema) });
 
   const {
     register: registerSignin,
     handleSubmit: handleSubmitSignin,
     formState: { errors: errorsSignin },
+    setError,
   } = useForm({ resolver: zodResolver(signinSchema) });
+
+  const [loginError, setLoginError] = useState("");
+  const [signupError, setSignupError] = useState(""); // State para o erro de signup
 
   async function inHandleSubmit(data) {
     try {
@@ -29,7 +35,14 @@ export function Authentication() {
       Cookies.set("token", response.data.token, { expires: 1 });
       navigate("/");
     } catch (error) {
-      console.log(error);
+      console.error("Erro ao fazer login: ", error);
+      if (error?.response?.status === 404) {
+        setLoginError("Email ou senha incorretos");
+        setError("password", { message: " " });
+        setError("email", { message: " " });
+      } else {
+        setLoginError("Erro ao fazer login");
+      }
     }
   }
 
@@ -41,7 +54,13 @@ export function Authentication() {
       Cookies.set("token", response.data.token, { expires: 1 });
       navigate("/");
     } catch (error) {
-      console.log(error);
+      console.error("Erro ao fazer cadastro: ", error);
+      if (error?.response?.status === 409) {
+        setSignupError("Email já cadastrado");
+        setErrorSignup("email", { message: " " });
+      } else {
+        setSignupError("Erro ao fazer cadastro");
+      }
     }
   }
 
@@ -56,18 +75,22 @@ export function Authentication() {
             name="email"
             register={registerSignin}
           />
-          {errorsSignin.email && (
-            <ErrorSpan>{errorsSignin.email.message}</ErrorSpan>
-          )}
+
           <Input
             type="password"
             placeholder="Senha"
             name="password"
             register={registerSignin}
           />
-          {errorsSignin.password && (
-            <ErrorSpan>{errorsSignin.password.message}</ErrorSpan>
-          )}
+          {loginError ||
+          (errorsSignin.email?.message && errorsSignin.email.message) ||
+          (errorsSignin.password?.message && errorsSignin.password.message) ? (
+            <ErrorSpan>
+              {loginError ||
+                errorsSignin.email?.message ||
+                errorsSignin.password?.message}
+            </ErrorSpan>
+          ) : null}
           <Button type="submit" text="Entrar" />
         </form>
       </Section>
@@ -90,9 +113,6 @@ export function Authentication() {
             name="email"
             register={registerSignup}
           />
-          {errorsSignup.email && (
-            <ErrorSpan>{errorsSignup.email.message}</ErrorSpan>
-          )}
           <Input
             type="password"
             placeholder="Senha"
@@ -112,6 +132,9 @@ export function Authentication() {
           {errorsSignup.confirmPassword && (
             <ErrorSpan>{errorsSignup.confirmPassword.message}</ErrorSpan>
           )}
+          {signupError || errorsSignup.email?.message ? (
+            <ErrorSpan>{signupError || errorsSignup.email?.message}</ErrorSpan>
+          ) : null}
           <Button type="submit" text="Cadastrar" />
         </form>
       </Section>
