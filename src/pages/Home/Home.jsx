@@ -12,11 +12,9 @@ export default function Home() {
     setLoading(true);
     try {
       const newsResponse = await findAll(5, 0);
-      console.log("Resposta do findAll:", newsResponse);
       const allNews = newsResponse.data.results;
 
-      const topNewsResponse = await getTopNews(); 
-      console.log("Resposta do topNews:", topNewsResponse);
+      const topNewsResponse = await getTopNews();
       setTopNews(topNewsResponse.data.news);
 
       if (allNews && topNewsResponse.data.news) {
