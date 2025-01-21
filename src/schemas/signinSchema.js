@@ -22,21 +22,34 @@ const validatePassword = (password) => {
   return errors.length > 0 ? errors : null;
 };
 
-export const signinSchema = z.object({
-  email: z.string().email({ message: "E-mail inválido" }).toLowerCase(),
-  password: z
-    .string()
-    .min(8, "A senha precisa ter no mínimo 8 caracteres")
-    .max(32, "A senha deve ter no máximo 32 caracteres")
-    .superRefine((password, ctx) => {
-      const errors = validatePassword(password);
-      if (errors) {
-        errors.forEach((error) =>
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: error,
-          })
-        );
-      }
-    }),
-});
+export const signinSchema = z
+  .object({
+    email: z
+      .string()
+      .nonempty({ message: "O campo de email deve ser preenchido!" })
+      .email({ message: "Insira um email válido." })
+      .toLowerCase(),
+    password: z
+      .string()
+      .nonempty({ message: "O campo de senha deve ser preenchido!" })
+      .min(8, "A senha precisa ter no mínimo 8 caracteres")
+      .max(32, "A senha deve ter no máximo 32 caracteres")
+      .superRefine((password, ctx) => {
+        const errors = validatePassword(password);
+        if (errors) {
+          errors.forEach((error) =>
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: error,
+            })
+          );
+        }
+      }),
+  })
+  .refine(
+    (data) => data.email.trim() !== "" && data.password.trim() !== "",
+    {
+      message: "Os campos não podem estar vazios.",
+      path: ["email", "password"],
+    }
+  );

@@ -27,7 +27,7 @@ export function Authentication() {
   } = useForm({ resolver: zodResolver(signinSchema) });
 
   const [loginError, setLoginError] = useState("");
-  const [signupError, setSignupError] = useState(""); // State para o erro de signup
+  const [signupError, setSignupError] = useState("");
 
   async function inHandleSubmit(data) {
     try {

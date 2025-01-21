@@ -46,7 +46,10 @@ export const signupSchema = z
           .map((word) => word[0].toUpperCase() + word.slice(1))
           .join(" ");
       }),
-    email: z.string().email({ message: "E-mail inválido" }).toLowerCase(),
+    email: z
+      .string()
+      .email({ message: "E-mail inválido" })
+      .transform((email) => (email.trim() === "" ? "" : email.toLowerCase())),
     password: z
       .string()
       .min(8, "A senha precisa ter no mínimo 8 caracteres")
